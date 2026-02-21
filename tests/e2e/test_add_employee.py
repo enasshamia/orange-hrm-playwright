@@ -8,7 +8,7 @@ from pages.login_page import LoginPage
 from pathlib import Path
 
 # Get the fixture directory path
-FIXTURES_DIR = Path(__file__).parent / "fixtures"
+FIXTURES_DIR = Path(__file__).parent/"fixtures"
 
 
 base_url = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
