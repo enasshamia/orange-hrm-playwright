@@ -5,20 +5,27 @@ from pytest_playwright.pytest_playwright import page
 from pages.add_empolyee import AddEmployee
 from pages.login_page import LoginPage
 
+from pathlib import Path
+
+# Get the fixture directory path
+FIXTURES_DIR = Path(__file__).parent / "fixtures"
+
+
+base_url = "https://opensource-demo.orangehrmlive.com/web/index.php/auth/login"
 def test_add_employee(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     employee_id = str(random.randint(1000, 99999))
     add_employee = AddEmployee(page)
     add_employee.fill_basic_info("Enas", "k", "n", employee_id)
-    add_employee.upload_photo("C:/Users/SAMSUNG/sunflower.jpg")
+    add_employee.upload_photo(str(FIXTURES_DIR / "sunflower.jpg"))
     add_employee.enable_login_details("kjhsd34", "Enas123@#s123", "Enas123@#s123")
     add_employee.save()
     expect(page.get_by_role("heading", name="Personal Details")).to_be_visible(timeout=15000)
 
 def test_required_fields_validation(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
@@ -31,7 +38,7 @@ def test_required_fields_validation(page):
 
 
 def test_username_uniqueness_validation(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     employee_id = str(random.randint(1000, 99999))
@@ -43,7 +50,7 @@ def test_username_uniqueness_validation(page):
     expect(error_locator).to_have_text("Username already exists")
 
 def test_username_length_validation(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
@@ -54,7 +61,7 @@ def test_username_length_validation(page):
     expect(error_locator).to_have_text("Should be at least 5 characters")
 
 def test_password_mismatch_validation(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
@@ -64,7 +71,7 @@ def test_password_mismatch_validation(page):
     expect(page.get_by_text("Passwords do not match")).to_be_visible()
 
 def test_password_length_validation(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     employee_id = str(random.randint(1000, 99999))
@@ -75,7 +82,7 @@ def test_password_length_validation(page):
     expect(page.get_by_text("Should have at least 7 characters")).to_be_visible()
 
 def test_password_complexity_validation(page):  
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
@@ -86,19 +93,19 @@ def test_password_complexity_validation(page):
 
 
 def test_upload_photo_validation(page): 
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
     add_employee.fill_basic_info("Enas", "k", "n", "")
-    add_employee.upload_photo("C:/Users/SAMSUNG/test.pdf")  # Invalid file type
+    add_employee.upload_photo(str(FIXTURES_DIR / "test.pdf"))  # Invalid file type
     expect(page.get_by_text("File type not allowed")).to_be_visible()
 
 def test_upload_photo_size_validation(page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+    page.goto(base_url)
     login_page = LoginPage(page)
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
     add_employee.fill_basic_info("Enas", "k", "n", "")
-    add_employee.upload_photo("C:/Users/SAMSUNG/sunflower2.png")  # Image larger than allowed size
+    add_employee.upload_photo(str(FIXTURES_DIR / "sunflower2.png"))  # Image larger than allowed size
     expect(page.get_by_text("Attachment Size Exceeded")).to_be_visible()
