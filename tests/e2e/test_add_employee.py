@@ -19,7 +19,7 @@ def test_add_employee(page):
     employee_id = str(random.randint(1000, 99999))
     add_employee = AddEmployee(page)
     add_employee.fill_basic_info("Enas", "k", "n", employee_id)
-    add_employee.upload_photo(str(FIXTURES_DIR / "sunflower.jpg"))
+    add_employee.upload_photo(str(FIXTURES_DIR/"sunflower.jpg"))
     add_employee.enable_login_details("kjhsd34", "Enas123@#s123", "Enas123@#s123")
     add_employee.save()
     expect(page.get_by_role("heading", name="Personal Details")).to_be_visible(timeout=15000)
@@ -98,7 +98,7 @@ def test_upload_photo_validation(page):
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
     add_employee.fill_basic_info("Enas", "k", "n", "")
-    add_employee.upload_photo(str(FIXTURES_DIR / "test.pdf"))  # Invalid file type
+    add_employee.upload_photo(str(FIXTURES_DIR/"test.pdf"))  # Invalid file type
     expect(page.get_by_text("File type not allowed")).to_be_visible()
 
 def test_upload_photo_size_validation(page):
@@ -107,5 +107,5 @@ def test_upload_photo_size_validation(page):
     login_page.login("Admin", "admin123")
     add_employee = AddEmployee(page)
     add_employee.fill_basic_info("Enas", "k", "n", "")
-    add_employee.upload_photo(str(FIXTURES_DIR / "sunflower2.png"))  # Image larger than allowed size
+    add_employee.upload_photo(str(FIXTURES_DIR/"sunflower2.png"))  # Image larger than allowed size
     expect(page.get_by_text("Attachment Size Exceeded")).to_be_visible()
