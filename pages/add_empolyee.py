@@ -36,11 +36,6 @@ class AddEmployee :
         if image_path: self.page.get_by_role("button", name="Choose File").set_input_files(image_path)
         self.page.wait_for_timeout(2000)
 
-
-    # ================
-    # ===========
-    # 4️⃣ حفظ الموظف
-    # ===========================
     def save(self):
         self.page.get_by_role("button", name="Save").click()
 
