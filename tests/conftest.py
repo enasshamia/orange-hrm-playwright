@@ -1,17 +1,30 @@
 import pytest
-from playwright.sync_api import Page
+import allure
 
 from pages.login_page import LoginPage
+from playwright.sync_api import Page
 
-
-@pytest.fixture(scope="function", autouse=True)
-def goto(page: Page):
-    """Fixture to navigate to the base URL."""
-    base_url = "https://opensource-demo.orangehrmlive.com/"
-    page.goto(base_url)
 
 @pytest.fixture
 def logged_in_page(page: Page):
-    page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
-    LoginPage(page).login("Admin", "admin123")
+    with allure.step("Open OrangeHRM login page"):
+        page.goto("https://opensource-demo.orangehrmlive.com/web/index.php/auth/login")
+
+    with allure.step("Login with Admin credentials"):
+        LoginPage(page).login("Admin", "admin123")
+
     return page
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    report = outcome.get_result()
+
+    if report.when == "call" and report.failed:
+        page = item.funcargs.get("logged_in_page")
+        if page:
+            screenshot = page.screenshot()
+            allure.attach(
+                screenshot,
+                name="failure-screenshot",
+                attachment_type=allure.attachment_type.PNG
+            )

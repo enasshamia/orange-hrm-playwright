@@ -2,10 +2,13 @@ name: Playwright Tests CI
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
+      - feature/ci-fixes   
   pull_request:
-    branches: [ main ]
-
+    branches: 
+      - main
+      - feature/ci-fixes
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -24,9 +27,19 @@ jobs:
           pip install -r requirements.txt
           pip install ruff
           playwright install --with-deps
-          
+          pip install allure-pytest
+
       - name: Run Ruff Linter
-        run: ruff check 
+        run: ruff check
 
       - name: Run Tests
-        run: pytest -v
+        run: pytest -v --alluredir=allure-results
+
+      - name: Generate Allure Report
+        run: allure generate allure-results --clean -o allure-report
+
+      - name: Upload Allure Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report

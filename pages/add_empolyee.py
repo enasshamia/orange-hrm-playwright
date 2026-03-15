@@ -1,15 +1,14 @@
-from email.mime import image
-from operator import ge
-from playwright.sync_api import expect
-from pytest_playwright.pytest_playwright import page
-
+    
 
 class AddEmployee :
     def __init__(self, page):
         self.page = page
-    def fill_basic_info(self, first_name, middle_name, last_name, emp_id):
+
+    def go_to_add_employee_page(self):
         self.page.get_by_role("link", name="PIM").click()
-        self.page.get_by_role("button", name=" Add").click()    
+        self.page.get_by_role("button", name=" Add").click()   
+    def fill_basic_info(self, first_name, middle_name, last_name, emp_id):
+    
         self.page.get_by_role("textbox", name="First Name").click()
         self.page.get_by_role("textbox", name="First Name").fill(first_name)
         self.page.get_by_role("textbox", name="Middle Name").click()
@@ -31,10 +30,11 @@ class AddEmployee :
         self.page.get_by_text("Disabled").click()
     
     def upload_photo(self, image_path=None):
-        
         self.page.get_by_role("button").nth(4).click()
-        if image_path: self.page.get_by_role("button", name="Choose File").set_input_files(image_path)
-        self.page.wait_for_timeout(2000)
+        if image_path:
+           self.page.get_by_role("button", name="Choose File").set_input_files(image_path)
+        self.page.wait_for_timeout(2000)            
+
 
     def save(self):
         self.page.get_by_role("button", name="Save").click()
