@@ -21,11 +21,10 @@ from pages.search_employee import SearchEmployee
         ("na" , "Nalim")  ,     # partial name
         ("FirstNameTest LastNameTest", "FirstName") ,# full name search
        
-        
     ]
 )
 
-def test_search_employee_variants(logged_in_page: Page, search_text, expected_text):
+def test_search_employee_username(logged_in_page: Page, search_text, expected_text):
     page = logged_in_page
     search_employee = SearchEmployee(page)
     with allure.step("Navigate to Employee List page"):
@@ -51,32 +50,32 @@ def test_search_employee_variants(logged_in_page: Page, search_text, expected_te
         ("ATPValue", "ATPValue"),
         ("Employee", "Employee"),
         ("", ""),
-        ("NonExistentID", "No Records Found")
+        ("eer", "No Records Found")
     ]
 )
-def test_employee_id_search(logged_in_page: Page, employee_id, expected_text):
 
+
+def test_employee_id_search(logged_in_page: Page, employee_id, expected_text):
+    
     page = logged_in_page
     search_employee = SearchEmployee(page)
-
+    page.context.tracing.group("search about employee with id: {employee_id}")
     search_employee.go_to_employee_list_page()
     search_employee.search_employee(employee_id=employee_id)
     search_employee.save_search_employee()
     rows = page.locator(".oxd-table-body .oxd-table-row")
     if expected_text == "No Records Found":
-        expect(page.locator("span:has-text('No Records Found')")).to_be_visible()
-        
+      SearchEmployee.search_with_id()        
     else: 
         if expected_text == "":
             
             expect(rows.first).to_be_visible()
         else:
             expect(rows).to_have_count(1)
-
             expect(page.locator(".oxd-table-body")).to_contain_text(expected_text)
-
             print("Returned Employee ID:", rows.first.text_content())
-            
+    page.context.tracing.group_end()
+
 
 
 @allure.title("Search employees with empty search criteria")

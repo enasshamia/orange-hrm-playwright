@@ -1,4 +1,5 @@
 
+from playwright.sync_api import  expect
 
 class SearchEmployee:
     def __init__(self, page):
@@ -19,3 +20,8 @@ class SearchEmployee:
     def save_search_employee(self):
         
         self.page.get_by_role("button", name="Search").click()
+
+    
+    def search_with_id (self):
+       expect(self.page.get_by_text("No Records Found")).to_be_visible(timeout=10000)
+    

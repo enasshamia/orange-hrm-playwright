@@ -28,6 +28,7 @@ jobs:
           pip install ruff
           playwright install --with-deps
           pip install allure-pytest
+          pip install faker
 
       - name: Run Ruff Linter
         run: ruff check
@@ -43,3 +44,9 @@ jobs:
         with:
           name: allure-report
           path: allure-report
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+  
